@@ -159,13 +159,15 @@ const PaymentHistory: React.FC<Props> = ({ house: propHouse, houseNumber, isAdmi
 
       const base = getBaseUrl();
       const url = house
-        ? `${base}/payments/history/${encodeURIComponent(String(house))}`
-        : `${base}/payments`;
+        ? `${base}/payments/history/${encodeURIComponent(String(house))}?_t=${Date.now()}`
+        : `${base}/payments?_t=${Date.now()}`;
 
       const token = await AsyncStorage.getItem('token');
       const headers: Record<string, string> = {
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache',
       };
       if (token) headers.Authorization = `Bearer ${token}`;
 
@@ -203,7 +205,7 @@ const PaymentHistory: React.FC<Props> = ({ house: propHouse, houseNumber, isAdmi
       const pairs = await Promise.all(
         filtered.map(async (p) => {
           try {
-            const res2 = await fetch(`${base}/payments/${p.id}/installments`, { headers: instHeaders });
+            const res2 = await fetch(`${base}/payments/${p.id}/installments?_t=${Date.now()}`, { headers: instHeaders });
             const j2 = await res2.json().catch(() => ({}));
             const arr: PaymentInstallment[] = res2.ok && Array.isArray(j2?.data) ? j2.data : [];
             return [p.id, arr] as [number, PaymentInstallment[]];
@@ -620,7 +622,17 @@ const PaymentHistory: React.FC<Props> = ({ house: propHouse, houseNumber, isAdmi
       }
 
       const latest = pickNextInstallment(list);
-      if (!latest) return null;
+      if (!latest) {
+        // ไม่มีงวดค้าง และไม่มีงวดที่จะถึงใน threshold → แสดงว่าชำระครบแล้ว
+        return (
+          <View style={styles.mt10}>
+            <View style={styles.allPaidCard}>
+              <Ionicons name="checkmark-circle" size={28} color="#22C55E" />
+              <Text style={styles.allPaidText}>{t('phAllPaid')}</Text>
+            </View>
+          </View>
+        );
+      }
       const status = getInstallmentStatus(latest);
       const statusLabel =
         status === 'paid' ? t('phPaidComplete') :
@@ -1179,6 +1191,22 @@ const styles = StyleSheet.create({
   dotPending: { backgroundColor: '#FEF3C7' },
   dotOverdue: { backgroundColor: '#C0392B' },
   userStatusMeta: { fontSize: 11, color: '#64748B', marginTop: 4, fontWeight: '700', textAlign: 'right' },
+  allPaidCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F0FDF4',
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+    borderWidth: 1,
+    borderColor: '#BBF7D0',
+    gap: 10,
+  },
+  allPaidText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#15803D',
+  },
   // ----- Bottom Sheet -----
   sheetBackdrop: {
     position: 'absolute',
@@ -1294,12 +1322,25 @@ const pickNextInstallment = (list: PaymentInstallment[]) => {
   if (overdue.length) return overdue[0];
 
   // 2) เน€เธโฌเน€เธยเนโฌโ€เน€เธโฌเน€เธยเธขยเน€เธโฌเน€เธยเน€เธโ€เน€เธโฌเน€เธยเธขยเน€เธโฌเน€เธยเน€เธยเน€เธโฌเน€เธยเธขยเน€เธโฌเน€เธยเน€เธยเน€เธโฌเน€เธยเน€เธโ€ขเน€เธโฌเน€เธยเธขยเน€เธโฌเน€เธยเธขยเน€เธโฌเน€เธยเธขยเน€เธโฌเน€เธยเธขยเน€เธโฌเน€เธยเธขยเน€เธโฌเน€เธยเน€เธยเน€เธโฌเน€เธยเน€เธโ€เน€เธโฌเน€เธยเธขยเน€เธโฌเน€เธยเน€เธยเน€เธโฌเน€เธยเนโฌยเน€เธโฌเน€เธยเนโฌโ€เน€เธโฌเน€เธยเน€เธโ€เน€เธโฌเน€เธยเนโฌยเน€เธยเน€เธยเน€เธยเน€เธเธ’เน€เธยเน€เธเธเน€เธเธ‘เน€เธยเน€เธยเน€เธเธ•เน€เธย (เน€เธเธเน€เธเธ‘เน€เธยเน€เธยเน€เธเธเน€เธยเน€เธยเน€เธยเน€เธเธ’เน€เธเธ)
-  const upcoming = list.filter((r) => notPaid(r) && time(r) >= todayKey).sort((a, b) => time(a) - time(b));
+  const isUpcomingVisible = (r: PaymentInstallment) => {
+    const m = Number(r.months_span) || 1;
+    const dueTime = time(r);
+    
+    let thresholdDays = 15;
+    if (m >= 12) thresholdDays = 180;
+    else if (m >= 6) thresholdDays = 90;
+    else if (m >= 3) thresholdDays = 30;
+    
+    const diffDays = (dueTime - todayKey) / (1000 * 60 * 60 * 24);
+    return diffDays <= thresholdDays;
+  };
+
+  const upcoming = list.filter((r) => notPaid(r) && time(r) >= todayKey && isUpcomingVisible(r)).sort((a, b) => time(a) - time(b));
   if (upcoming.length) return upcoming[0];
 
   // 3) เน€เธยเน€เธยเน€เธเธ’เน€เธเธเน€เธยเน€เธเธเน€เธยเน€เธยเน€เธเธ…เน€เธยเน€เธเธ -> เน€เธโฌเน€เธยเธขยเน€เธโฌเน€เธยเน€เธยเน€เธโฌเน€เธยเนโฌยเน€เธโฌเน€เธยเธขยเน€เธโฌเน€เธยเน€เธยเน€เธโฌเน€เธยเน€เธโ€เน€เธโฌเน€เธยเน€เธยเน€เธโฌเน€เธยเธขยเน€เธโฌเน€เธยเน€เธโ€เน€เธโฌเน€เธยเน€เธยเน€เธโฌเน€เธยเนโฌโ€เน€เธโฌเน€เธยเน€เธโ€ขเน€เธโฌเน€เธยเธขยเน€เธโฌเน€เธยเน€เธยเน€เธโฌเน€เธยเน€เธโ€เน€เธโฌเน€เธยเธขยเน€เธโฌเน€เธยเนโฌโ€เน€เธโฌเน€เธยเน€เธโ€ขเน€เธโฌเน€เธยเธขยเน€เธโฌเน€เธยเน€เธยเน€เธโฌเน€เธยเน€เธโ€เน€เธโฌเน€เธยเธขยเน€เธโฌเน€เธยเน€เธยเน€เธโฌเน€เธยเน€เธยเน€เธโฌเน€เธยเนโฌย
-  const allPaid = [...list].sort((a, b) => time(b) - time(a));
-  return allPaid[0];
+  // 3) All paid + no upcoming visible -> return null
+  return null;
 };
 
 // เน€เธโฌเน€เธยเธขยเน€เธโฌเน€เธยเน€เธโ€เน€เธโฌเน€เธยเธขยเน€เธโฌเน€เธยเน€เธยเน€เธโฌเน€เธยเนโฌยเน€เธโฌเน€เธยเน€เธยเน€เธโฌเน€เธยเนโฌโ€เน€เธโฌเน€เธยเน€เธโ€เน€เธโฌเน€เธยเธขยเน€เธโฌเน€เธยเน€เธยเน€เธโฌเน€เธยเนยเธเน€เธยเน€เธเธ—เน€เธยเน€เธเธเน€เธยเน€เธยเน€เธเธเน€เธย (เน€เธโฌเน€เธยเธขยเน€เธโฌเน€เธยเน€เธยเน€เธโฌเน€เธยเธขยเน€เธโฌเน€เธยเนยเธเน€เธยเน€เธเธ’เน€เธเธเน€เธย DB overdue เน€เธยเน€เธเธ…เน€เธเธ period_end)

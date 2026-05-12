@@ -60,6 +60,15 @@ function toSingleLineText(value, fallback = '-') {
   return text || fallback;
 }
 
+function extractNameObj(nameObj) {
+  if (!nameObj) return '';
+  if (typeof nameObj === 'string') return nameObj;
+  if (typeof nameObj === 'object') {
+    return `${nameObj.th || ''} ${nameObj.en || ''}`.trim();
+  }
+  return String(nameObj);
+}
+
 function maskPromptPay(promptPayId) {
   const digits = String(promptPayId || '').replace(/\D/g, '');
   if (!digits) return '-';
@@ -74,6 +83,18 @@ function compactRef(value) {
   return `${raw.slice(0, 32)}...`;
 }
 
+function formatThaiDate(input) {
+  const d = input ? new Date(input) : new Date();
+  const dt = Number.isNaN(d.getTime()) ? new Date() : d;
+  const pad = (n) => String(n).padStart(2, '0');
+  const thaiMonths = [
+    'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+    'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.',
+  ];
+  const buddhistYear = dt.getFullYear() + 543;
+  return `${dt.getDate()} ${thaiMonths[dt.getMonth()]} ${buddhistYear} - ${pad(dt.getHours())}:${pad(dt.getMinutes())} น.`;
+}
+
 function buildBankSlipSvg({
   amount,
   senderName,
@@ -85,11 +106,11 @@ function buildBankSlipSvg({
   reference,
   receiptNo,
 }) {
-  const amountText = `${formatMoney(amount)} THB`;
-  const dateText = formatReceiptDateTime(paidAt);
-  const payerText = toSingleLineText(senderName, 'Unknown sender');
-  const senderBankText = toSingleLineText(sendingBank, 'Unknown bank');
-  const receiverText = toSingleLineText(receiverName, 'Village Juristic Person');
+  const amountText = formatMoney(amount);
+  const dateText = formatThaiDate(paidAt);
+  const payerText = toSingleLineText(senderName, 'ไม่ทราบผู้โอน');
+  const senderBankText = toSingleLineText(sendingBank, 'ไม่ทราบธนาคาร');
+  const receiverText = toSingleLineText(receiverName, 'NitiSmart');
   const houseText = toSingleLineText(houseNumber, '-');
   const promptPayMasked = maskPromptPay(promptPayId);
   const refText = compactRef(reference || receiptNo);
@@ -97,48 +118,72 @@ function buildBankSlipSvg({
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="1080" height="1920" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#1C4CC4"/>
-      <stop offset="100%" stop-color="#0B2A7E"/>
-    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feFlood flood-color="#000000" flood-opacity="0.08" result="flood"/>
+      <feComposite in="flood" in2="SourceGraphic" operator="in" result="mask"/>
+      <feGaussianBlur in="mask" stdDeviation="15" result="blur"/>
+      <feOffset in="blur" dx="0" dy="8" result="offset"/>
+      <feMerge>
+        <feMergeNode in="offset"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
   </defs>
-  <rect width="1080" height="1920" fill="url(#bg)"/>
-  <rect x="48" y="48" width="984" height="1824" rx="44" fill="#FFFFFF"/>
 
-  <text x="90" y="130" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700" fill="#0F172A">MOBILE BANKING</text>
-  <text x="90" y="182" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="600" fill="#16A34A">PAYMENT SUCCESS</text>
+  <!-- Background -->
+  <rect width="1080" height="1920" fill="#f0f2f5"/>
 
-  <circle cx="942" cy="146" r="56" fill="#16A34A"/>
-  <path d="M914 148 L936 170 L972 126" fill="none" stroke="#FFFFFF" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Card -->
+  <rect x="80" y="260" width="920" height="1380" rx="38" fill="#FFFFFF" filter="url(#shadow)"/>
 
-  <text x="90" y="320" font-family="Arial, Helvetica, sans-serif" font-size="30" fill="#334155">Amount</text>
-  <text x="90" y="398" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="700" fill="#0F172A">${escapeXml(amountText)}</text>
+  <!-- Header Stripe -->
+  <rect x="80" y="260" width="920" height="30" rx="38" fill="#003399"/>
+  <rect x="80" y="275" width="920" height="15" fill="#003399"/>
 
-  <line x1="90" y1="450" x2="990" y2="450" stroke="#E2E8F0" stroke-width="2"/>
+  <!-- Header Info -->
+  <text x="152" y="380" font-family="Tahoma, sans-serif" font-size="48" font-weight="bold" fill="#003399">Payment</text>
+  <text x="928" y="380" font-family="Tahoma, sans-serif" font-size="34" font-weight="bold" fill="#1a8a3a" text-anchor="end">ทำรายการสำเร็จ</text>
 
-  <text x="90" y="530" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#64748B">Date / Time</text>
-  <text x="90" y="574" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="600" fill="#0F172A">${escapeXml(dateText)}</text>
+  <!-- Time Label -->
+  <text x="152" y="450" font-family="Tahoma, sans-serif" font-size="32" fill="#6b6b6b">${escapeXml(dateText)}</text>
 
-  <text x="90" y="656" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#64748B">Reference</text>
-  <text x="90" y="700" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="600" fill="#0F172A">${escapeXml(refText)}</text>
+  <!-- Info Container Line -->
+  <line x1="176" y1="530" x2="176" y2="850" stroke="#eeeeee" stroke-width="5"/>
 
-  <text x="90" y="782" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#64748B">Sender</text>
-  <text x="90" y="826" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="600" fill="#0F172A">${escapeXml(payerText)}</text>
-  <text x="90" y="870" font-family="Arial, Helvetica, sans-serif" font-size="30" fill="#334155">${escapeXml(senderBankText)}</text>
+  <!-- Node 1: From -->
+  <circle cx="176" cy="530" r="14" fill="#003399"/>
+  <circle cx="176" cy="530" r="18" fill="none" stroke="#003399" stroke-width="3"/>
+  <text x="224" y="520" font-family="Tahoma, sans-serif" font-size="28" fill="#6b6b6b">จาก</text>
+  <text x="224" y="570" font-family="Tahoma, sans-serif" font-size="38" font-weight="bold" fill="#2b2b2b">${escapeXml(payerText)}</text>
+  <text x="224" y="615" font-family="Tahoma, sans-serif" font-size="34" fill="#6b6b6b">${escapeXml(senderBankText)}</text>
 
-  <text x="90" y="952" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#64748B">Receiver</text>
-  <text x="90" y="996" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="600" fill="#0F172A">${escapeXml(receiverText)}</text>
-  <text x="90" y="1040" font-family="Arial, Helvetica, sans-serif" font-size="30" fill="#334155">PromptPay ${escapeXml(promptPayMasked)}</text>
+  <!-- Address Highlight -->
+  <rect x="224" y="640" width="680" height="120" rx="19" fill="#f8faff"/>
+  <rect x="224" y="640" width="10" height="120" rx="10" fill="#003399"/>
+  <rect x="229" y="640" width="5" height="120" fill="#003399"/>
+  <text x="260" y="685" font-family="Tahoma, sans-serif" font-size="28" font-weight="bold" fill="#003399">บ้านเลขที่</text>
+  <text x="260" y="735" font-family="Tahoma, sans-serif" font-size="36" font-weight="bold" fill="#2b2b2b">${escapeXml(houseText)}</text>
 
-  <text x="90" y="1122" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#64748B">House Number</text>
-  <text x="90" y="1166" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="600" fill="#0F172A">${escapeXml(houseText)}</text>
+  <!-- Node 2: To -->
+  <circle cx="176" cy="850" r="14" fill="#003399"/>
+  <circle cx="176" cy="850" r="18" fill="none" stroke="#003399" stroke-width="3"/>
+  <text x="224" y="840" font-family="Tahoma, sans-serif" font-size="28" fill="#6b6b6b">ไปยัง</text>
+  <text x="224" y="890" font-family="Tahoma, sans-serif" font-size="38" font-weight="bold" fill="#2b2b2b">${escapeXml(receiverText)}</text>
+  <text x="224" y="935" font-family="Tahoma, sans-serif" font-size="34" fill="#6b6b6b">PromptPay ${escapeXml(promptPayMasked)}</text>
 
-  <rect x="90" y="1280" width="900" height="240" rx="24" fill="#EFF6FF"/>
-  <text x="130" y="1368" font-family="Arial, Helvetica, sans-serif" font-size="30" fill="#1E3A8A">Digital Slip</text>
-  <text x="130" y="1420" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#334155">This image is generated after successful slip verification.</text>
-  <text x="130" y="1470" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#334155">Receipt No: ${escapeXml(receiptNo)}</text>
+  <!-- Amount Container -->
+  <line x1="152" y1="1020" x2="928" y2="1020" stroke="#dddddd" stroke-dasharray="10, 10" stroke-width="3"/>
+  <text x="540" y="1100" font-family="Tahoma, sans-serif" font-size="28" fill="#6b6b6b" text-anchor="middle">จำนวนเงิน (บาท)</text>
+  <text x="540" y="1190" font-family="Tahoma, sans-serif" font-size="86" font-weight="bold" fill="#003399" text-anchor="middle">${escapeXml(amountText)}</text>
+  <text x="540" y="1250" font-family="Tahoma, sans-serif" font-size="34" fill="#6b6b6b" text-anchor="middle">ค่าธรรมเนียม: 0.00</text>
 
-  <text x="90" y="1710" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#64748B">Generated by payment verification service</text>
+  <!-- Footer Ref -->
+  <line x1="152" y1="1330" x2="928" y2="1330" stroke="#f0f0f0" stroke-width="3"/>
+  <text x="152" y="1400" font-family="Tahoma, sans-serif" font-size="28" fill="#6b6b6b">เลขที่อ้างอิง: ${escapeXml(refText)}</text>
+  <text x="152" y="1450" font-family="Tahoma, sans-serif" font-size="28" fill="#6b6b6b">ใบเสร็จ: ${escapeXml(receiptNo)}</text>
+  <text x="152" y="1500" font-family="Tahoma, sans-serif" font-size="28" fill="#6b6b6b">โอนเงิน PromptPay</text>
+  <text x="152" y="1560" font-family="Tahoma, sans-serif" font-size="28" font-weight="bold" fill="#ff6600">ตรวจสอบความถูกต้องได้ที่แอปฯ ธนาคาร</text>
+
 </svg>`;
 }
 
@@ -564,7 +609,8 @@ function registerSlipOkRoutes(app) {
         || null;
 
       const sendingBank = d?.sender?.bank?.name || d?.sender?.bank?.id || d?.sendingBank || null;
-      const senderName = d?.sender?.account?.name || null;
+      const senderNameObj = d?.sender?.account?.name || d?.sender?.name || d?.sender?.displayName;
+      const senderName = extractNameObj(senderNameObj) || null;
 
       const dateTimeRaw = d?.dateTime || null;
       let transDate = d?.transDate || null;
@@ -593,9 +639,10 @@ function registerSlipOkRoutes(app) {
         const expectedReceiverName = toNonEmptyString(
           await getRuntimeSetting(app, 'receiver_name', '')
         ).toUpperCase();
-        const actualReceiverName = toNonEmptyString(
-          d?.receiver?.account?.name
-        ).toUpperCase();
+        
+        const receiverNameObj = d?.receiver?.account?.name || d?.receiver?.name || d?.receiver?.displayName;
+        const actualReceiverName = toNonEmptyString(extractNameObj(receiverNameObj)).toUpperCase();
+        
         if (expectedReceiverName && actualReceiverName
             && !actualReceiverName.includes(expectedReceiverName)
             && !expectedReceiverName.includes(actualReceiverName)) {
@@ -743,6 +790,21 @@ function registerSlipOkRoutes(app) {
            WHERE id = ?`,
           [intentId]
         ).catch(() => {});
+
+        if (intentForCleanup && intentForCleanup.installment_id) {
+          let proofPath = null;
+          if (req.file) {
+            proofPath = 'uploads/' + req.file.filename;
+          }
+          await pool.query(
+            `UPDATE payment_installments
+             SET status = 'paid', paid_at = COALESCE(paid_at, NOW()), paid_method = 'promptpay',
+                 paid_note = 'Auto verified by Slip2Go', proof_image = COALESCE(?, proof_image),
+                 paid_by = COALESCE(paid_by, ?), approved_by = 'System (Auto)'
+             WHERE id = ?`,
+            [proofPath, senderName || 'System', intentForCleanup.installment_id]
+          ).catch(e => console.error('[slip-check] update installment error:', e.message));
+        }
       }
 
       const qrFilenameRaw =

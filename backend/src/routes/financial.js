@@ -91,7 +91,7 @@ const unifiedTransactionsSql = `
     id, 
     'income' AS type, 
     amount, 
-    CONCAT('ค่าส่วนกลางบ้าน ', house_number) AS title, 
+    CONCAT('ค่าส่วนกลางบ้าน ', COALESCE(house_number, 'ไม่ระบุ')) AS title, 
     paid_note AS description, 
     paid_at AS date, 
     'installment' AS source,

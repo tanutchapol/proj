@@ -400,6 +400,7 @@ const th: Record<string, string> = {
   phHouseNumber: 'บ้านเลขที่',
   phGoBack: 'ย้อนกลับ',
   phClose: 'ปิด',
+  phAllPaid: 'ชำระครบแล้ว ยังไม่มีงวดถัดไป',
 
   // ===== Repair Page =====
   repairNoImageFile: 'ไม่พบไฟล์รูปที่จะอัปโหลด',

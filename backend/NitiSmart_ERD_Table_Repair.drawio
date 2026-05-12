@@ -1,0 +1,31 @@
+<mxfile host="Electron" modified="2023-01-01T00:00:00.000Z" agent="Mozilla/5.0" version="20.3.0" type="device">
+  <diagram id="diagram_1" name="Repair ERD">
+    <mxGraphModel dx="1500" dy="1500" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3000" pageHeight="3000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="table_accounts" value="&lt;b&gt;accounts&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;username : VARCHAR(64)&lt;br&gt;password_hash : VARCHAR(255)&lt;br&gt;full_name : VARCHAR(255)&lt;br&gt;phone : VARCHAR(30)&lt;br&gt;role : ENUM('user', 'admin', 'superadmin')&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="100" y="100" width="240" height="166" as="geometry" />
+        </mxCell>
+        <mxCell id="table_repairs" value="&lt;b&gt;repairs&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : VARCHAR(32) &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;user_id : BIGINT&lt;br&gt;title : VARCHAR(255)&lt;br&gt;detail : TEXT&lt;br&gt;house_number : VARCHAR(32)&lt;br&gt;status : ENUM('pending', 'in_progress', 'done')&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="450" y="100" width="240" height="166" as="geometry" />
+        </mxCell>
+        <mxCell id="table_repair_photos" value="&lt;b&gt;repair_photos&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;repair_id : VARCHAR(32)&lt;br&gt;url : VARCHAR(1024)&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="800" y="100" width="240" height="112" as="geometry" />
+        </mxCell>
+        <mxCell id="table_repair_edit_logs" value="&lt;b&gt;repair_edit_logs&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;repair_id : INT&lt;br&gt;action : VARCHAR(32)&lt;br&gt;changes : JSON&lt;br&gt;performed_by : BIGINT&lt;br&gt;performed_by_name : VARCHAR(255)&lt;br&gt;performed_by_role : VARCHAR(32)&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="100" y="550" width="240" height="184" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1000" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_repairs" target="table_accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1001" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_repair_photos" target="table_repairs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1002" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_repair_edit_logs" target="table_accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

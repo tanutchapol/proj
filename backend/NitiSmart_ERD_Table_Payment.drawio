@@ -1,0 +1,37 @@
+<mxfile host="Electron" modified="2023-01-01T00:00:00.000Z" agent="Mozilla/5.0" version="20.3.0" type="device">
+  <diagram id="diagram_1" name="Payment ERD">
+    <mxGraphModel dx="1500" dy="1500" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3000" pageHeight="3000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="table_accounts" value="&lt;b&gt;accounts&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;username : VARCHAR(64)&lt;br&gt;password_hash : VARCHAR(255)&lt;br&gt;full_name : VARCHAR(255)&lt;br&gt;phone : VARCHAR(30)&lt;br&gt;role : ENUM('user', 'admin', 'superadmin')&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="100" y="100" width="240" height="166" as="geometry" />
+        </mxCell>
+        <mxCell id="table_houses" value="&lt;b&gt;houses&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : INT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;house_number : VARCHAR(32)&lt;br&gt;owner_name : VARCHAR(128)&lt;br&gt;area_sq_m : DECIMAL(10,2)&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="450" y="100" width="240" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="table_payments" value="&lt;b&gt;payments&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : INT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;house_id : INT&lt;br&gt;house_number : VARCHAR(32)&lt;br&gt;area_sq_m : DECIMAL(10,2)&lt;br&gt;rate_per_sqm : DECIMAL(10,2)&lt;br&gt;months : INT&lt;br&gt;amount_per_month : DECIMAL(12,2)&lt;br&gt;total_amount : DECIMAL(12,2)&lt;br&gt;note : VARCHAR(255)&lt;br&gt;cover_until : TIMESTAMP&lt;br&gt;pay_status : ENUM('paid', 'pending', 'overdue', 'waiting_approval')&lt;br&gt;remaining_days : INT&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;updated_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="800" y="100" width="240" height="292" as="geometry" />
+        </mxCell>
+        <mxCell id="table_payment_installments" value="&lt;b&gt;payment_installments&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;payment_id : INT&lt;br&gt;house_number : VARCHAR(32)&lt;br&gt;installment_no : INT&lt;br&gt;months_span : INT&lt;br&gt;due_date : TIMESTAMP&lt;br&gt;amount : DECIMAL(12,2)&lt;br&gt;status : ENUM('paid', 'pending', 'overdue', 'waiting_approval')&lt;br&gt;paid_at : TIMESTAMP&lt;br&gt;period_start : DATE&lt;br&gt;period_end : DATE&lt;br&gt;paid_method : ENUM('cash', 'promptpay', 'bank_transfer')&lt;br&gt;paid_note : VARCHAR(255)&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="100" y="550" width="240" height="292" as="geometry" />
+        </mxCell>
+        <mxCell id="table_payment_intents" value="&lt;b&gt;payment_intents&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;installment_id : BIGINT&lt;br&gt;payment_id : INT&lt;br&gt;house_number : VARCHAR(32)&lt;br&gt;amount : DECIMAL(12,2)&lt;br&gt;method : ENUM('cash', 'promptpay', 'bank_transfer')&lt;br&gt;status : ENUM('initiated', 'pending', 'confirmed', 'failed', 'expired')&lt;br&gt;qr_id : VARCHAR(255)&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;updated_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="450" y="550" width="240" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="table_slipok_verifications" value="&lt;b&gt;slipok_verifications&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;amount : DECIMAL(12,2)&lt;br&gt;qrcode_data : TEXT&lt;br&gt;sending_bank : VARCHAR(128)&lt;br&gt;sender_name : VARCHAR(255)&lt;br&gt;trans_date : CHAR(8)&lt;br&gt;trans_time : CHAR(8)&lt;br&gt;slip_datetime : DATETIME&lt;br&gt;paid_at : DATETIME&lt;br&gt;raw_json : TEXT&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="800" y="550" width="240" height="238" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1000" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_payments" target="table_houses">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1001" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_payment_installments" target="table_payments">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1002" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_payment_intents" target="table_payment_installments">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

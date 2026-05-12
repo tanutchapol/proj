@@ -1,0 +1,58 @@
+<mxfile host="Electron" modified="2023-01-01T00:00:00.000Z" agent="Mozilla/5.0" version="20.3.0" type="device">
+  <diagram id="diagram_1" name="Core ERD">
+    <mxGraphModel dx="1500" dy="1500" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3000" pageHeight="3000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="table_accounts" value="&lt;b&gt;accounts&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;username : VARCHAR(64)&lt;br&gt;password_hash : VARCHAR(255)&lt;br&gt;full_name : VARCHAR(255)&lt;br&gt;phone : VARCHAR(30)&lt;br&gt;role : ENUM('user', 'admin', 'superadmin')&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="100" y="100" width="240" height="166" as="geometry" />
+        </mxCell>
+        <mxCell id="table_users" value="&lt;b&gt;users&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : VARCHAR(64) &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;amount : DECIMAL(10,2)&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;updated_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="450" y="100" width="240" height="112" as="geometry" />
+        </mxCell>
+        <mxCell id="table_residents" value="&lt;b&gt;residents&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;house_number : VARCHAR(32)&lt;br&gt;title : VARCHAR(16)&lt;br&gt;first_name : VARCHAR(128)&lt;br&gt;last_name : VARCHAR(128)&lt;br&gt;phone : VARCHAR(32)&lt;br&gt;household_count : INT&lt;br&gt;car_count : INT&lt;br&gt;pay_months : INT&lt;br&gt;account_id : BIGINT&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;updated_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="800" y="100" width="240" height="256" as="geometry" />
+        </mxCell>
+        <mxCell id="table_houses" value="&lt;b&gt;houses&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : INT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;house_number : VARCHAR(32)&lt;br&gt;owner_name : VARCHAR(128)&lt;br&gt;area_sq_m : DECIMAL(10,2)&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="100" y="550" width="240" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="table_announcements" value="&lt;b&gt;announcements&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;title : VARCHAR(255)&lt;br&gt;date : VARCHAR(32)&lt;br&gt;image : VARCHAR(1024)&lt;br&gt;description : TEXT&lt;br&gt;important : BOOLEAN&lt;br&gt;created_by : BIGINT&lt;br&gt;updated_by : BIGINT&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;updated_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="450" y="550" width="240" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="table_contacts" value="&lt;b&gt;contacts&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;title : VARCHAR(255)&lt;br&gt;number : VARCHAR(64)&lt;br&gt;created_by : BIGINT&lt;br&gt;updated_by : BIGINT&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;updated_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="800" y="550" width="240" height="166" as="geometry" />
+        </mxCell>
+        <mxCell id="table_system_settings" value="&lt;b&gt;system_settings&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;key : VARCHAR(64) &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;value : TEXT&lt;br&gt;is_encrypted : BOOLEAN&lt;br&gt;updated_at : TIMESTAMP&lt;br&gt;updated_by : BIGINT&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1000" width="240" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="table_resident_logs" value="&lt;b&gt;resident_logs&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;action : VARCHAR(32)&lt;br&gt;resident_id : BIGINT&lt;br&gt;house_number : VARCHAR(32)&lt;br&gt;resident_name : VARCHAR(255)&lt;br&gt;changes : JSON&lt;br&gt;performed_by : BIGINT&lt;br&gt;performed_by_name : VARCHAR(255)&lt;br&gt;performed_by_role : VARCHAR(32)&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="450" y="1000" width="240" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="table_announcement_logs" value="&lt;b&gt;announcement_logs&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;action : VARCHAR(32)&lt;br&gt;announcement_id : INT&lt;br&gt;announcement_title : TEXT&lt;br&gt;changes : JSON&lt;br&gt;performed_by : BIGINT&lt;br&gt;performed_by_name : VARCHAR(255)&lt;br&gt;performed_by_role : VARCHAR(32)&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="800" y="1000" width="240" height="202" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1000" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_residents" target="table_accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1001" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_announcements" target="table_accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1002" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_announcements" target="table_accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1003" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_contacts" target="table_accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1004" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_contacts" target="table_accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1005" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_system_settings" target="table_accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1006" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_resident_logs" target="table_accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

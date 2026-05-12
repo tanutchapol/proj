@@ -387,7 +387,12 @@ export default function PaymentScreen({ darkMode, onBack }: PaymentScreenProps) 
         try {
           setReceiptDownloading(true);
           await downloadImageToGallery(receiptUrl, 'bank_slip');
-          showAlert('ชำระเงินสำเร็จ', 'ตรวจสอบสลิปแล้ว และบันทึกรูปใบเสร็จลงแกลเลอรีเรียบร้อย');
+          showAlert('ชำระเงินสำเร็จ', 'ตรวจสอบสลิปแล้ว และบันทึกรูปใบเสร็จลงแกลเลอรีเรียบร้อย', [
+            { text: 'ตกลง', onPress: () => {
+              setReceiptModalVisible(false);
+              if (onBack) onBack();
+            }}
+          ]);
         } catch (saveErr: any) {
           if (saveErr?.message === 'STORAGE_PERMISSION_DENIED') {
             showAlert('ชำระเงินสำเร็จ', 'ตรวจสอบสลิปแล้ว แต่ไม่สามารถบันทึกรูปได้เพราะไม่ได้รับสิทธิ์จัดเก็บข้อมูล');
@@ -405,7 +410,11 @@ export default function PaymentScreen({ darkMode, onBack }: PaymentScreenProps) 
         typeof providerResult === 'object'
           ? JSON.stringify(providerResult, null, 2)
           : String(providerResult);
-      showAlert('อัปโหลดสำเร็จ', `ตรวจสอบสลิปแล้ว:\n${result}`);
+      showAlert('อัปโหลดสำเร็จ', `ตรวจสอบสลิปแล้ว:\n${result}`, [
+        { text: 'ตกลง', onPress: () => {
+          if (onBack) onBack();
+        }}
+      ]);
     } catch (err: any) {
       showAlert('ผิดพลาด', err?.message || 'เกิดข้อผิดพลาด');
     } finally {
@@ -437,7 +446,12 @@ export default function PaymentScreen({ darkMode, onBack }: PaymentScreenProps) 
     try {
       setReceiptDownloading(true);
       await downloadImageToGallery(receiptImageUrl, 'bank_slip');
-      showAlert('บันทึกสำเร็จ', 'บันทึกรูปใบเสร็จลงแกลเลอรีแล้ว');
+      showAlert('บันทึกสำเร็จ', 'บันทึกรูปใบเสร็จลงแกลเลอรีแล้ว', [
+        { text: 'ตกลง', onPress: () => {
+          setReceiptModalVisible(false);
+          if (onBack) onBack();
+        }}
+      ]);
     } catch (err: any) {
       if (err?.message === 'STORAGE_PERMISSION_DENIED') {
         showAlert('ไม่ได้รับสิทธิ์', 'ต้องอนุญาตสิทธิ์จัดเก็บข้อมูลเพื่อบันทึกรูป');
@@ -447,7 +461,7 @@ export default function PaymentScreen({ darkMode, onBack }: PaymentScreenProps) 
     } finally {
       setReceiptDownloading(false);
     }
-  }, [receiptImageUrl, receiptDownloading, downloadImageToGallery]);
+  }, [receiptImageUrl, receiptDownloading, downloadImageToGallery, onBack]);
 
   const expiryText = useMemo(() => {
     if (secondsLeft == null) return '-';
@@ -567,16 +581,22 @@ export default function PaymentScreen({ darkMode, onBack }: PaymentScreenProps) 
         visible={receiptModalVisible}
         transparent
         animationType="fade"
-        onRequestClose={() => setReceiptModalVisible(false)}
+        onRequestClose={() => {
+          setReceiptModalVisible(false);
+          if (onBack) onBack();
+        }}
       >
         <View style={styles.receiptBackdrop}>
           <View style={[styles.receiptModalCard, { backgroundColor: colors.cardBg, borderColor: colors.border }]}>
-            <Text style={[styles.receiptTitle, { color: colors.text }]}>BANK SLIP</Text>
+            <View style={styles.receiptHeaderRow}>
+              <Text style={[styles.receiptTitle, styles.receiptTitleBrand]}>NitiSmart</Text>
+              <Text style={styles.receiptSuccessLabel}>ทำรายการสำเร็จ</Text>
+            </View>
             <View style={[styles.receiptImageWrap, { borderColor: colors.border }]}> 
               {receiptImageUrl ? (
                 <Image source={{ uri: receiptImageUrl }} style={styles.receiptImagePreview} resizeMode="contain" />
               ) : (
-                <Text style={{ color: colors.subtext }}>Receipt image is not available.</Text>
+                <Text style={[{ color: colors.subtext }]}>ไม่พบรูปใบเสร็จ</Text>
               )}
             </View>
 
@@ -592,15 +612,18 @@ export default function PaymentScreen({ darkMode, onBack }: PaymentScreenProps) 
                 {receiptDownloading ? (
                   <ActivityIndicator size="small" color="#FFFFFF" />
                 ) : (
-                  <Text style={styles.receiptBtnText}>Download Image</Text>
+                  <Text style={styles.receiptBtnText}>บันทึกรูป</Text>
                 )}
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={styles.receiptBtnSecondary}
-                onPress={() => setReceiptModalVisible(false)}
+                onPress={() => {
+                  setReceiptModalVisible(false);
+                  if (onBack) onBack();
+                }}
               >
-                <Text style={styles.receiptBtnText}>Close</Text>
+                <Text style={styles.receiptBtnText}>ปิดและกลับ</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -719,12 +742,23 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
     padding: 16,
+    borderTopWidth: 5,
+    borderTopColor: '#003399',
+  },
+  receiptHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
   },
   receiptTitle: {
-    fontSize: wp('5%'),
+    fontSize: wp('5.5%'),
     fontWeight: '700',
-    textAlign: 'center',
-    marginBottom: 12,
+  },
+  receiptSuccessLabel: {
+    fontSize: wp('3.5%'),
+    fontWeight: '700',
+    color: '#2e7d32',
   },
   receiptImageWrap: {
     borderWidth: 1,
@@ -767,6 +801,9 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: wp('3.8%'),
     fontWeight: '700',
+  },
+  receiptTitleBrand: {
+    color: '#003399',
   },
 });
 

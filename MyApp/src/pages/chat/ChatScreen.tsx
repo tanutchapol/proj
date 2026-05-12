@@ -1534,7 +1534,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ darkMode = false, initialRoom, 
   }, [getToken, loadPinned]);
   const PAGE_SIZE = 30;
   const INITIAL_PAGE_SIZE = 20;
-  const MAX_MESSAGES_IN_MEMORY = 500; // Cap to prevent OOM when scrolling through very long chat history
+  
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 

@@ -1,0 +1,175 @@
+<mxfile host="Electron" modified="2023-01-01T00:00:00.000Z" agent="Mozilla/5.0" version="20.3.0" type="device">
+  <diagram id="diagram_1" name="Combined ERD">
+    <mxGraphModel dx="1500" dy="1500" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3000" pageHeight="3000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="table_accounts" value="&lt;b&gt;accounts&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;username : VARCHAR(64)&lt;br&gt;password_hash : VARCHAR(255)&lt;br&gt;full_name : VARCHAR(255)&lt;br&gt;phone : VARCHAR(30)&lt;br&gt;role : ENUM('user', 'admin', 'superadmin')&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="100" y="100" width="240" height="166" as="geometry" />
+        </mxCell>
+        <mxCell id="table_users" value="&lt;b&gt;users&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : VARCHAR(64) &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;amount : DECIMAL(10,2)&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;updated_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="450" y="100" width="240" height="112" as="geometry" />
+        </mxCell>
+        <mxCell id="table_residents" value="&lt;b&gt;residents&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;house_number : VARCHAR(32)&lt;br&gt;title : VARCHAR(16)&lt;br&gt;first_name : VARCHAR(128)&lt;br&gt;last_name : VARCHAR(128)&lt;br&gt;phone : VARCHAR(32)&lt;br&gt;household_count : INT&lt;br&gt;car_count : INT&lt;br&gt;pay_months : INT&lt;br&gt;account_id : BIGINT&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;updated_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="800" y="100" width="240" height="256" as="geometry" />
+        </mxCell>
+        <mxCell id="table_houses" value="&lt;b&gt;houses&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : INT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;house_number : VARCHAR(32)&lt;br&gt;owner_name : VARCHAR(128)&lt;br&gt;area_sq_m : DECIMAL(10,2)&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="100" width="240" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="table_payments" value="&lt;b&gt;payments&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : INT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;house_id : INT&lt;br&gt;house_number : VARCHAR(32)&lt;br&gt;area_sq_m : DECIMAL(10,2)&lt;br&gt;rate_per_sqm : DECIMAL(10,2)&lt;br&gt;months : INT&lt;br&gt;amount_per_month : DECIMAL(12,2)&lt;br&gt;total_amount : DECIMAL(12,2)&lt;br&gt;note : VARCHAR(255)&lt;br&gt;cover_until : TIMESTAMP&lt;br&gt;pay_status : ENUM('paid', 'pending', 'overdue', 'waiting_approval')&lt;br&gt;remaining_days : INT&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;updated_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="1500" y="100" width="240" height="292" as="geometry" />
+        </mxCell>
+        <mxCell id="table_payment_installments" value="&lt;b&gt;payment_installments&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;payment_id : INT&lt;br&gt;house_number : VARCHAR(32)&lt;br&gt;installment_no : INT&lt;br&gt;months_span : INT&lt;br&gt;due_date : TIMESTAMP&lt;br&gt;amount : DECIMAL(12,2)&lt;br&gt;status : ENUM('paid', 'pending', 'overdue', 'waiting_approval')&lt;br&gt;paid_at : TIMESTAMP&lt;br&gt;period_start : DATE&lt;br&gt;period_end : DATE&lt;br&gt;paid_method : ENUM('cash', 'promptpay', 'bank_transfer')&lt;br&gt;paid_note : VARCHAR(255)&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="100" y="550" width="240" height="292" as="geometry" />
+        </mxCell>
+        <mxCell id="table_payment_intents" value="&lt;b&gt;payment_intents&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;installment_id : BIGINT&lt;br&gt;payment_id : INT&lt;br&gt;house_number : VARCHAR(32)&lt;br&gt;amount : DECIMAL(12,2)&lt;br&gt;method : ENUM('cash', 'promptpay', 'bank_transfer')&lt;br&gt;status : ENUM('initiated', 'pending', 'confirmed', 'failed', 'expired')&lt;br&gt;qr_id : VARCHAR(255)&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;updated_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="450" y="550" width="240" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="table_slipok_verifications" value="&lt;b&gt;slipok_verifications&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;amount : DECIMAL(12,2)&lt;br&gt;qrcode_data : TEXT&lt;br&gt;sending_bank : VARCHAR(128)&lt;br&gt;sender_name : VARCHAR(255)&lt;br&gt;trans_date : CHAR(8)&lt;br&gt;trans_time : CHAR(8)&lt;br&gt;slip_datetime : DATETIME&lt;br&gt;paid_at : DATETIME&lt;br&gt;raw_json : TEXT&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="800" y="550" width="240" height="238" as="geometry" />
+        </mxCell>
+        <mxCell id="table_announcements" value="&lt;b&gt;announcements&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;title : VARCHAR(255)&lt;br&gt;date : VARCHAR(32)&lt;br&gt;image : VARCHAR(1024)&lt;br&gt;description : TEXT&lt;br&gt;important : BOOLEAN&lt;br&gt;created_by : BIGINT&lt;br&gt;updated_by : BIGINT&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;updated_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="550" width="240" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="table_contacts" value="&lt;b&gt;contacts&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;title : VARCHAR(255)&lt;br&gt;number : VARCHAR(64)&lt;br&gt;created_by : BIGINT&lt;br&gt;updated_by : BIGINT&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;updated_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="1500" y="550" width="240" height="166" as="geometry" />
+        </mxCell>
+        <mxCell id="table_repairs" value="&lt;b&gt;repairs&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : VARCHAR(32) &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;user_id : BIGINT&lt;br&gt;title : VARCHAR(255)&lt;br&gt;detail : TEXT&lt;br&gt;house_number : VARCHAR(32)&lt;br&gt;status : ENUM('pending', 'in_progress', 'done')&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1000" width="240" height="166" as="geometry" />
+        </mxCell>
+        <mxCell id="table_repair_photos" value="&lt;b&gt;repair_photos&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;repair_id : VARCHAR(32)&lt;br&gt;url : VARCHAR(1024)&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="450" y="1000" width="240" height="112" as="geometry" />
+        </mxCell>
+        <mxCell id="table_chat_rooms" value="&lt;b&gt;chat_rooms&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;name : VARCHAR(255)&lt;br&gt;room_type : ENUM('public', 'dm')&lt;br&gt;owner_id : BIGINT&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="800" y="1000" width="240" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="table_chat_members" value="&lt;b&gt;chat_members&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;room_id : BIGINT&lt;br&gt;user_id : BIGINT&lt;br&gt;role : ENUM('member', 'admin')&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="1000" width="240" height="112" as="geometry" />
+        </mxCell>
+        <mxCell id="table_chat_messages" value="&lt;b&gt;chat_messages&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;room_id : BIGINT&lt;br&gt;user_id : BIGINT&lt;br&gt;text : TEXT&lt;br&gt;msg_type : ENUM('text', 'image', 'file')&lt;br&gt;file_url : VARCHAR(1024)&lt;br&gt;file_name : VARCHAR(512)&lt;br&gt;file_size : BIGINT&lt;br&gt;mime_type : VARCHAR(255)&lt;br&gt;reply_to_id : BIGINT&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="1500" y="1000" width="240" height="238" as="geometry" />
+        </mxCell>
+        <mxCell id="table_chat_room_reads" value="&lt;b&gt;chat_room_reads&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;room_id : BIGINT&lt;br&gt;user_id : BIGINT&lt;br&gt;last_read_message_id : BIGINT&lt;br&gt;last_read_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1450" width="240" height="112" as="geometry" />
+        </mxCell>
+        <mxCell id="table_chat_room_pins" value="&lt;b&gt;chat_room_pins&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;room_id : BIGINT&lt;br&gt;user_id : BIGINT&lt;br&gt;pinned_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="450" y="1450" width="240" height="94" as="geometry" />
+        </mxCell>
+        <mxCell id="table_chat_room_admin_pins" value="&lt;b&gt;chat_room_admin_pins&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;room_id : BIGINT&lt;br&gt;pinned_by : BIGINT&lt;br&gt;pinned_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="800" y="1450" width="240" height="94" as="geometry" />
+        </mxCell>
+        <mxCell id="table_chat_message_pins" value="&lt;b&gt;chat_message_pins&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;message_id : BIGINT&lt;br&gt;room_id : BIGINT&lt;br&gt;user_id : BIGINT&lt;br&gt;pinned_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="1450" width="240" height="112" as="geometry" />
+        </mxCell>
+        <mxCell id="table_chat_reactions" value="&lt;b&gt;chat_reactions&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;message_id : BIGINT&lt;br&gt;user_id : BIGINT&lt;br&gt;emoji : VARCHAR(16)&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="1500" y="1450" width="240" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="table_system_settings" value="&lt;b&gt;system_settings&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;key : VARCHAR(64) &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;value : TEXT&lt;br&gt;is_encrypted : BOOLEAN&lt;br&gt;updated_at : TIMESTAMP&lt;br&gt;updated_by : BIGINT&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1900" width="240" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="table_resident_logs" value="&lt;b&gt;resident_logs&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;action : VARCHAR(32)&lt;br&gt;resident_id : BIGINT&lt;br&gt;house_number : VARCHAR(32)&lt;br&gt;resident_name : VARCHAR(255)&lt;br&gt;changes : JSON&lt;br&gt;performed_by : BIGINT&lt;br&gt;performed_by_name : VARCHAR(255)&lt;br&gt;performed_by_role : VARCHAR(32)&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="450" y="1900" width="240" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="table_repair_edit_logs" value="&lt;b&gt;repair_edit_logs&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;repair_id : INT&lt;br&gt;action : VARCHAR(32)&lt;br&gt;changes : JSON&lt;br&gt;performed_by : BIGINT&lt;br&gt;performed_by_name : VARCHAR(255)&lt;br&gt;performed_by_role : VARCHAR(32)&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="800" y="1900" width="240" height="184" as="geometry" />
+        </mxCell>
+        <mxCell id="table_announcement_logs" value="&lt;b&gt;announcement_logs&lt;/b&gt;&lt;hr style='margin:2px 0;'&gt;id : BIGINT &lt;b&gt;(PK)&lt;/b&gt;&lt;br&gt;action : VARCHAR(32)&lt;br&gt;announcement_id : INT&lt;br&gt;announcement_title : TEXT&lt;br&gt;changes : JSON&lt;br&gt;performed_by : BIGINT&lt;br&gt;performed_by_name : VARCHAR(255)&lt;br&gt;performed_by_role : VARCHAR(32)&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=10;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="1900" width="240" height="202" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1000" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_residents" target="table_accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1001" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_payments" target="table_houses">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1002" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_payment_installments" target="table_payments">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1003" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_payment_intents" target="table_payment_installments">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1004" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_announcements" target="table_accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1005" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_announcements" target="table_accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1006" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_contacts" target="table_accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1007" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_contacts" target="table_accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1008" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_repairs" target="table_accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1009" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_repair_photos" target="table_repairs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1010" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_chat_rooms" target="table_accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1011" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_chat_members" target="table_chat_rooms">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1012" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_chat_members" target="table_accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1013" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_chat_messages" target="table_chat_rooms">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1014" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_chat_messages" target="table_accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1015" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_chat_messages" target="table_chat_messages">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1016" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_chat_room_reads" target="table_chat_rooms">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1017" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_chat_room_reads" target="table_accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1018" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_chat_room_reads" target="table_chat_messages">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1019" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_chat_room_pins" target="table_chat_rooms">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1020" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_chat_room_pins" target="table_accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1021" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_chat_room_admin_pins" target="table_chat_rooms">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1022" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_chat_room_admin_pins" target="table_accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1023" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_chat_message_pins" target="table_chat_messages">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1024" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_chat_message_pins" target="table_chat_rooms">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1025" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_chat_message_pins" target="table_accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1026" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_chat_reactions" target="table_chat_messages">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1027" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_chat_reactions" target="table_accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1028" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_system_settings" target="table_accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1029" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_resident_logs" target="table_accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1030" style="edgeStyle=entityRelationEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;endFill=1;" edge="1" parent="1" source="table_repair_edit_logs" target="table_accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

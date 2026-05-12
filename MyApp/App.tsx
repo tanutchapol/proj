@@ -471,25 +471,52 @@ function AppContent() {
       const headers = {
         Authorization: `Bearer ${token}`,
         Accept: 'application/json',
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache',
       } as const;
 
+      const calculateVisibleTotal = (installments: any[]) => {
+        const todayKey = new Date().setHours(0, 0, 0, 0);
+        return installments.reduce((sum: number, it: any) => {
+          const status = String(it?.status || '').toLowerCase();
+          if (status === 'paid' || status === 'waiting_approval') return sum;
+          
+          let isVisible = false;
+          if (status === 'overdue') {
+            isVisible = true;
+          } else {
+            const dueTime = new Date(it?.due_date || '').getTime();
+            if (Number.isNaN(dueTime) || dueTime < todayKey) {
+               isVisible = true;
+            } else {
+               const m = Number(it?.months_span) || 1;
+               let thresholdDays = 15;
+               if (m >= 12) thresholdDays = 180;
+               else if (m >= 6) thresholdDays = 90;
+               else if (m >= 3) thresholdDays = 30;
+               
+               const diffDays = (dueTime - Date.now()) / (1000 * 60 * 60 * 24);
+               isVisible = diffDays <= thresholdDays;
+            }
+          }
+          
+          if (!isVisible) return sum;
+          const amount = Number(it?.amount);
+          return Number.isFinite(amount) ? sum + amount : sum;
+        }, 0);
+      };
+
       if (role === 'admin' || role === 'superadmin') {
-        const res = await fetch(`${getBaseUrl()}/payment-installments/latest?limit=1000`, { headers });
+        const res = await fetch(`${getBaseUrl()}/payment-installments/latest?limit=1000&_t=${Date.now()}`, { headers });
         const json = await res.json().catch(() => ({}));
         if (!res.ok || !json?.ok) return null;
         const rows = Array.isArray(json.data) ? json.data : [];
-        const total = rows.reduce((sum: number, row: any) => {
-          const status = String(row?.status || '').toLowerCase();
-          if (status === 'paid') return sum;
-          const amount = Number(row?.amount);
-          return Number.isFinite(amount) ? sum + amount : sum;
-        }, 0);
-        return total;
+        return calculateVisibleTotal(rows);
       }
 
       let house = String(selectedHouse || '').trim();
       if (!house) {
-        const resH = await fetch(`${getBaseUrl()}/me/resident`, { headers });
+        const resH = await fetch(`${getBaseUrl()}/me/resident?_t=${Date.now()}`, { headers });
         const jsonH = await resH.json().catch(() => ({}));
         if (resH.ok && jsonH?.ok) {
           house = String(jsonH?.data?.house_number || '').trim();
@@ -497,7 +524,7 @@ function AppContent() {
       }
       if (!house) return 0;
 
-      const resPh = await fetch(`${getBaseUrl()}/payments/history/${encodeURIComponent(house)}`, { headers });
+      const resPh = await fetch(`${getBaseUrl()}/payments/history/${encodeURIComponent(house)}?_t=${Date.now()}`, { headers });
       const jsonPh = await resPh.json().catch(() => ({}));
       if (!resPh.ok || !jsonPh?.ok) return null;
 
@@ -506,18 +533,12 @@ function AppContent() {
       const latestPaymentId = Number(payments[0]?.id);
       if (!Number.isFinite(latestPaymentId) || latestPaymentId <= 0) return 0;
 
-      const resIns = await fetch(`${getBaseUrl()}/payments/${latestPaymentId}/installments`, { headers });
+      const resIns = await fetch(`${getBaseUrl()}/payments/${latestPaymentId}/installments?_t=${Date.now()}`, { headers });
       const jsonIns = await resIns.json().catch(() => ({}));
       if (!resIns.ok || !jsonIns?.ok) return null;
       const installments = Array.isArray(jsonIns.data) ? jsonIns.data : [];
 
-      const total = installments.reduce((sum: number, it: any) => {
-        const status = String(it?.status || '').toLowerCase();
-        if (status === 'paid') return sum;
-        const amount = Number(it?.amount);
-        return Number.isFinite(amount) ? sum + amount : sum;
-      }, 0);
-      return total;
+      return calculateVisibleTotal(installments);
     } catch {
       return null;
     }

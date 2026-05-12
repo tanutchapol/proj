@@ -105,9 +105,10 @@ const PaymentStatus: React.FC<Props> = ({ darkMode, onSelectHouse }) => {
        if (queryParam) params.append('search', queryParam);
        if (m) params.append('month', String(m));
        if (y) params.append('year', String(y));
+       params.append('_t', String(Date.now()));
 
        const url = `${base}/payment-installments/latest?${params.toString()}`;
-       const latest = await apiFetchJson(url);
+       const latest = await apiFetchJson(url, { headers: { 'Cache-Control': 'no-cache', Pragma: 'no-cache' } });
 
        if (latest.res.ok && Array.isArray(latest.json?.data)) {
          const rows: LatestInstallmentRow[] = latest.json.data;
